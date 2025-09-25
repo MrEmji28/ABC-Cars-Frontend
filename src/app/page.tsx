@@ -1,103 +1,168 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Search, Car as CarIcon, Wrench, Settings, Paintbrush } from 'lucide-react';
+import { apiService, Car, SearchFilters } from '@/lib/api';
+import Link from 'next/link';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [cars, setCars] = useState<Car[]>([]);
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
+    brand: '',
+    model: '',
+    year: ''
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    fetchCars();
+  }, []);
+
+  const fetchCars = async () => {
+    try {
+      const data = await apiService.getCars();
+      setCars(data || []);
+    } catch (error) {
+      console.error('Error fetching cars:', error);
+    }
+  };
+
+  const handleSearch = async () => {
+    try {
+      const filters: SearchFilters = {};
+      if (searchFilters.brand) filters.brand = searchFilters.brand;
+      if (searchFilters.model) filters.model = searchFilters.model;
+      if (searchFilters.year) filters.year = searchFilters.year;
+      
+      const data = await apiService.getCars(filters);
+      setCars(data || []);
+    } catch (error) {
+      console.error('Error searching cars:', error);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Header */}
+      <header className="bg-gray-800 p-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="text-2xl font-bold">FIRSTGEAR</div>
+          <nav className="hidden md:flex space-x-6">
+            <a href="#" className="hover:text-gray-300">Home</a>
+            <a href="#" className="hover:text-gray-300">Our Inventory</a>
+            <a href="#" className="hover:text-gray-300">What We Offer</a>
+            <a href="#" className="hover:text-gray-300">About Us</a>
+            <a href="#" className="hover:text-gray-300">Contact Us</a>
+            <a href="#" className="hover:text-gray-300">Write Us</a>
+          </nav>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative h-screen flex items-center justify-center bg-gradient-to-r from-gray-900 to-gray-700">
+        <div className="text-center z-10">
+          <h1 className="text-6xl font-bold mb-4">
+            Find your<br />dream car
+          </h1>
+          <p className="text-xl mb-8 max-w-md mx-auto">
+            We can help you find the best car. Check our reviews, compare models and find cars for sale
+          </p>
+          <button className="bg-orange-500 hover:bg-orange-600 px-8 py-3 rounded font-semibold">
+            EXPLORE →
+          </button>
+        </div>
+      </section>
+
+      {/* Search Section */}
+      <section className="bg-gray-800 p-8">
+        <div className="container mx-auto">
+          <h2 className="text-2xl font-bold mb-6">Used Cars For Sale</h2>
+          <div className="flex flex-wrap gap-4 mb-6">
+            <select 
+              className="bg-gray-700 p-3 rounded flex-1 min-w-48"
+              value={searchFilters.brand}
+              onChange={(e) => setSearchFilters({...searchFilters, brand: e.target.value})}
+            >
+              <option value="">Select Brand</option>
+              <option value="Toyota">Toyota</option>
+              <option value="BMW">BMW</option>
+              <option value="Mercedes">Mercedes</option>
+              <option value="Audi">Audi</option>
+            </select>
+            <select 
+              className="bg-gray-700 p-3 rounded flex-1 min-w-48"
+              value={searchFilters.model}
+              onChange={(e) => setSearchFilters({...searchFilters, model: e.target.value})}
+            >
+              <option value="">Select Model</option>
+            </select>
+            <select 
+              className="bg-gray-700 p-3 rounded flex-1 min-w-48"
+              value={searchFilters.year}
+              onChange={(e) => setSearchFilters({...searchFilters, year: e.target.value})}
+            >
+              <option value="">Select Year</option>
+              {Array.from({length: 25}, (_, i) => 2024 - i).map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+            <button 
+              onClick={handleSearch}
+              className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded font-semibold"
+            >
+              SEARCH
+            </button>
+          </div>
+
+          {/* Services */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-gray-700 p-6 rounded text-center">
+              <CarIcon className="mx-auto mb-2" size={32} />
+              <h3 className="font-semibold">Car Service</h3>
+            </div>
+            <div className="bg-gray-700 p-6 rounded text-center">
+              <Wrench className="mx-auto mb-2" size={32} />
+              <h3 className="font-semibold">Auto Spa</h3>
+            </div>
+            <div className="bg-gray-700 p-6 rounded text-center">
+              <Settings className="mx-auto mb-2" size={32} />
+              <h3 className="font-semibold">Tunning</h3>
+            </div>
+            <div className="bg-gray-700 p-6 rounded text-center">
+              <Paintbrush className="mx-auto mb-2" size={32} />
+              <h3 className="font-semibold">Body Shop</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Cars */}
+      <section className="p-8">
+        <div className="container mx-auto">
+          <h2 className="text-3xl font-bold mb-2">RECENT CARS</h2>
+          <p className="text-gray-400 mb-8">Exquisite Collection of Luxury Cars</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {cars.slice(0, 6).map((car) => (
+              <Link key={car.id} href={`/cars/${car.id}`}>
+                <div className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors cursor-pointer">
+                  <div className="h-48 bg-gray-700 flex items-center justify-center">
+                    {car.image_url ? (
+                      <img src={car.image_url} alt={`${car.brand} ${car.model}`} className="w-full h-full object-cover" />
+                    ) : (
+                      <CarIcon size={64} className="text-gray-500" />
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-lg">{car.title}</h3>
+                    <p className="text-gray-400">{car.brand} {car.model} ({car.year})</p>
+                    <p className="text-orange-500 font-bold text-xl">${car.price.toLocaleString()}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

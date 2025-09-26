@@ -46,19 +46,24 @@ export default function Home() {
       <header className="bg-gray-800 p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">FIRSTGEAR</div>
-          <nav className="hidden md:flex space-x-6">
-            <a href="#" className="hover:text-gray-300">Home</a>
-            <a href="#" className="hover:text-gray-300">Our Inventory</a>
-            <a href="#" className="hover:text-gray-300">What We Offer</a>
-            <a href="#" className="hover:text-gray-300">About Us</a>
-            <a href="#" className="hover:text-gray-300">Contact Us</a>
-            <a href="#" className="hover:text-gray-300">Write Us</a>
-          </nav>
+          <div className="flex items-center space-x-6">
+            <nav className="hidden md:flex space-x-6">
+              <Link href="/" className="hover:text-gray-300">Home</Link>
+              <Link href="/inventory" className="hover:text-gray-300">Our Inventory</Link>
+              <Link href="/services" className="hover:text-gray-300">What We Offer</Link>
+              <Link href="/about" className="hover:text-gray-300">About Us</Link>
+              <Link href="/contact" className="hover:text-gray-300">Contact Us</Link>
+            </nav>
+            <div className="flex space-x-4">
+              <Link href="/auth/login" className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded">Login</Link>
+              <Link href="/auth/register" className="border border-orange-500 hover:bg-orange-500 px-4 py-2 rounded">Register</Link>
+            </div>
+          </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center bg-gradient-to-r from-gray-900 to-gray-700">
+      <section className="relative h-screen flex items-center justify-center bg-gradient-to-r from-gray-900 to-gray-700" style={{backgroundImage: 'url(/images/hero.png)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <div className="text-center z-10">
           <h1 className="text-6xl font-bold mb-4">
             Find your<br />dream car
